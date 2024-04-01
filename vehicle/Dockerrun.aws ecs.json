@@ -1,0 +1,23 @@
+{
+  "AWSEBDockerrunVersion": 3,
+  "containerDefinitions": [
+    {
+      "name": "fleet-ms-vehicle-service",
+      "image": "notenger/fleet-ms-vehicle-service",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8082
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://fleet-ms-vehicle-db.cv4mqy2smx4o.eu-central-1.rds.amazonaws.com:5432/vehicle"
+        }
+      ]
+    }
+  ]
+}

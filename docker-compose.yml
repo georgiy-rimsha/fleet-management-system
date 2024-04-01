@@ -1,0 +1,36 @@
+services:
+  db:
+    container_name: postgres
+    image: postgres:14.1
+    environment:
+      POSTGRES_USER: notenger
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5332:5432"
+    networks:
+      - db
+    restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+      - "61613:61613"
+    volumes:
+      - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
+    networks:
+      - spring
+
+networks:
+  db:
+    driver: bridge
+  spring:
+    driver: bridge
+
+volumes:
+  db:

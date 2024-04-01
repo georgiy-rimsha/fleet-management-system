@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="nexus-repository" />
+      <option name="name" value="Nexus Repository" />
+      <option name="url" value="https://nexus.nuiton.org/nexus/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="geotools-repository" />
+      <option name="name" value="Geotools Repository" />
+      <option name="url" value="https://repo.osgeo.org/repository/geotools-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Projects\Fleet Management System\Code\fleet-management-system\device/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Techs and disciplines\Java\Projects\telematics\simulation/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Techs and disciplines\Java\Projects\telematics\place/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nuiton-repository" />
+      <option name="name" value="Nuiton Repository" />
+      <option name="url" value="https://nexus.nuiton.org/nexus/content/groups/agrosyst-group/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="geotools-repository" />
+      <option name="name" value="Geotools Repository" />
+      <option name="url" value="https://repo.osgeo.org/service/rest/repository/browse/geotools-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nuiton-repository" />
+      <option name="name" value="Nuiton Repository" />
+      <option name="url" value="https://nexus.nuiton.org/nexus/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Projects\Fleet Management System\Code\fleet-management-system\amqp/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Techs and disciplines\Java\Projects\telematics\device/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Nexus-repository" />
+      <option name="name" value="Nexus Repository" />
+      <option name="url" value="https://nexus.nuiton.org/nexus/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Projects\Fleet Management System\Code\fleet-management-system\place/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Techs and disciplines\Java\Projects\telematics\vehicle/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Projects\Fleet Management System\Code\fleet-management-system\simulation/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="geotools-repository" />
+      <option name="name" value="Geotools Repository" />
+      <option name="url" value="http://acme.able.cs.cmu.edu/maven-repository/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Techs and disciplines\Java\Projects\telematics/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="project-repository" />
+      <option name="name" value="project-repository" />
+      <option name="url" value="file://D:\CPLUS.root\Projects\Fleet Management System\Code\fleet-management-system/repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nuiton-repository" />
+      <option name="name" value="Nuiton Repository" />
+      <option name="url" value="https://example.com/maven-repo/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nuiton-repository" />
+      <option name="name" value="Nuiton Repository" />
+      <option name="url" value="https://maven.nuiton.org/release/" />
+    </remote-repository>
+  </component>
+</project>

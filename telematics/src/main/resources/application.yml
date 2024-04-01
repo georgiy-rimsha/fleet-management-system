@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  data:
+    mongodb:
+      database: telematics
+      port: 27017
+  mongodb:
+    embedded:
+      version: 4.0.2
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    notification: notification.queue
+  routing-keys:
+    internal-notification: internal.notification.routing-key
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+      databaseDir: ./database
