@@ -55,7 +55,6 @@ class VehicleJPADataAccessServiceTest {
                 .builder()
                 .year(1999)
                 .model("Rolls")
-                .averageSpeed(110.)
                 .build();
 
         // When
@@ -96,7 +95,6 @@ class VehicleJPADataAccessServiceTest {
                 .builder()
                 .year(1999)
                 .model("Rolls")
-                .averageSpeed(110.)
                 .build();
 
         // When

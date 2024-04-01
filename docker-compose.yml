@@ -1,5 +1,5 @@
 services:
-  db:
+  postgres:
     container_name: postgres
     image: postgres:14.1
     environment:
@@ -7,11 +7,11 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
-      - db:/data/postgres
+      - postgres:/data/postgres
     ports:
       - "5332:5432"
     networks:
-      - db
+      - postgres
     restart: unless-stopped
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine
@@ -25,12 +25,50 @@ services:
       - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
     networks:
       - spring
+  vehicle:
+    image: notenger/vehicle:latest
+#    container_name: vehicle
+    ports:
+      - "8080:8080"
+    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/vehicle
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - postgres
+  simulation:
+    image: notenger/simulation:latest
+#    container_name: simulation
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - postgres
+      - rabbitmq
+  telematics:
+    image: notenger/telematics:latest
+#    container_name: telematics
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - rabbitmq
 
 networks:
-  db:
+  postgres:
     driver: bridge
   spring:
     driver: bridge
 
 volumes:
-  db:
+  postgres:

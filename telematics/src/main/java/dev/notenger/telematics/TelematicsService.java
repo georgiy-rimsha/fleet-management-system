@@ -37,7 +37,6 @@ public class TelematicsService {
     @Scheduled(fixedRate = 3_000)
     public void pushAggregatedData() {
         TelemetryDTO telemetryDTO = getDeviceTelemetrySummary();
-        System.out.println("pushAggregatedData: " + telemetryDTO);
         messagingTemplate.convertAndSend("/telematics/telemetry", telemetryDTO);
     }
 

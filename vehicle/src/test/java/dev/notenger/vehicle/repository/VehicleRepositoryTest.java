@@ -40,7 +40,6 @@ class VehicleRepositoryTest extends AbstractTestcontainers {
                 .builder()
                 .year(1999)
                 .model(model)
-                .averageSpeed(110.)
                 .build();
 
         underTest.save(vehicle);
@@ -79,7 +78,6 @@ class VehicleRepositoryTest extends AbstractTestcontainers {
                 .builder()
                 .year(1999)
                 .model(model)
-                .averageSpeed(110.)
                 .build();
 
         underTest.save(vehicle);

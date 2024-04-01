@@ -10,9 +10,9 @@ spring:
     embedded:
       version: 4.0.2
   rabbitmq:
-    addresses: localhost:5672
+    addresses: rabbitmq:5672
   profiles:
-    active: default
+    active: docker
 
 rabbitmq:
   exchanges:

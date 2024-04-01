@@ -12,53 +12,28 @@
     <packaging>jar</packaging>
     <artifactId>vehicle</artifactId>
 
-<!--    <properties>-->
-<!--        <maven.compiler.source>19</maven.compiler.source>-->
-<!--        <maven.compiler.target>19</maven.compiler.target>-->
-<!--        <docker.username>notenger</docker.username>-->
-<!--        <docker.image.name>notenger-api</docker.image.name>-->
-<!--        <docker.image.tag/>-->
-<!--        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>-->
-<!--    </properties>-->
-
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>com.google.cloud.tools</groupId>-->
-<!--                <artifactId>jib-maven-plugin</artifactId>-->
-<!--                <version>3.4.0</version>-->
-<!--                <configuration>-->
-<!--                    <from>-->
-<!--                        <image>eclipse-temurin:19</image>-->
-<!--                        <platforms>-->
-<!--                            <platform>-->
-<!--                                <architecture>amd64</architecture>-->
-<!--                                <os>windows</os>-->
-<!--                            </platform>-->
-<!--                            <platform>-->
-<!--                                <architecture>amd64</architecture>-->
-<!--                                <os>linux</os>-->
-<!--                            </platform>-->
-<!--                        </platforms>-->
-<!--                    </from>-->
-<!--                    <to>-->
-<!--                        <image>docker.io/${docker.username}/${docker.image.name}:${project.version}</image>-->
-<!--                        <tags>-->
-<!--                            <tag>latest</tag>-->
-<!--                        </tags>-->
-<!--                    </to>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>build</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>build-docker-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public interface DeviceClient {
 
     @GetMapping("{deviceId}")
-    public DeviceDTO getDevice(@PathVariable("deviceId") Integer deviceId);
+    DeviceDTO getDevice(@PathVariable("deviceId") Integer deviceId);
 
     @PostMapping
     RegisterDeviceResponse registerDevice(@RequestBody RegisterDeviceRequest request);
@@ -20,7 +20,7 @@ public interface DeviceClient {
     void unregisterDevice(@PathVariable("deviceId") Integer deviceId);
 
     @PutMapping("{deviceId}")
-    public void updateDevice(@PathVariable("deviceId") Integer deviceId, @RequestBody UpdateDeviceRequest request);
+    void updateDevice(@PathVariable("deviceId") Integer deviceId, @RequestBody UpdateDeviceRequest request);
 
     @PutMapping("/reserve")
     ReserveDeviceResponse reserveDevice(@RequestBody ReserveDeviceRequest request);

@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication(
-//        exclude = {DataSourceAutoConfiguration.class},
         scanBasePackages = {
-        "dev.notenger.simulation",
-        "dev.notenger.amqp",
-})
+                "dev.notenger.simulation",
+                "dev.notenger.amqp",
+        }
+)
 @PropertySources({
         @PropertySource("classpath:clients-${spring.profiles.active}.properties")
 })

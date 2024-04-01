@@ -3,6 +3,6 @@ server:
 
 spring:
   rabbitmq:
-    addresses: localhost:5672
+    addresses: rabbitmq:5672
   profiles:
-    active: default
+    active: docker
