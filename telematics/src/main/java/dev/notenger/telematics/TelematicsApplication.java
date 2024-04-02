@@ -11,7 +11,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
         scanBasePackages = {
                 "dev.notenger.telematics",
                 "dev.notenger.amqp"
-        }
+        },
+        exclude = {DataSourceAutoConfiguration.class}
 )
 public class TelematicsApplication {
     public static void main(String[] args) {

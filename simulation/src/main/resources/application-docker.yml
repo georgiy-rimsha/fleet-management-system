@@ -4,5 +4,3 @@ server:
 spring:
   rabbitmq:
     addresses: rabbitmq:5672
-  profiles:
-    active: docker

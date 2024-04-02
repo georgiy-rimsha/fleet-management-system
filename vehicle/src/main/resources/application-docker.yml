@@ -22,6 +22,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format-sql: true
     show-sql: true
-
-  profiles:
-    active: docker

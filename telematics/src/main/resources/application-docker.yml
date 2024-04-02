@@ -11,8 +11,6 @@ spring:
       version: 4.0.2
   rabbitmq:
     addresses: rabbitmq:5672
-  profiles:
-    active: docker
 
 rabbitmq:
   exchanges:

@@ -13,7 +13,6 @@ import org.springframework.context.annotation.PropertySources;
 import java.util.List;
 
 @SpringBootApplication
-//        (exclude = {DataSourceAutoConfiguration.class})
 @EnableFeignClients(
         basePackages = "dev.notenger.clients"
 )

@@ -27,12 +27,11 @@ services:
       - spring
   vehicle:
     image: notenger/vehicle:latest
-#    container_name: vehicle
+    container_name: vehicle
     ports:
       - "8080:8080"
     environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/vehicle
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - spring
       - postgres
@@ -40,12 +39,11 @@ services:
       - postgres
   simulation:
     image: notenger/simulation:latest
-#    container_name: simulation
+    container_name: simulation
     ports:
       - "8081:8081"
     environment:
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-#      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - spring
     depends_on:
@@ -53,12 +51,12 @@ services:
       - rabbitmq
   telematics:
     image: notenger/telematics:latest
-#    container_name: telematics
+    container_name: telematics
     ports:
       - "8082:8082"
+      - "27017:27017"
     environment:
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
-#      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - spring
     depends_on:
