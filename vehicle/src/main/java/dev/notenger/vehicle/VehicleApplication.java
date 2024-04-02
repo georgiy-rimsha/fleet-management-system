@@ -33,9 +33,8 @@ public class VehicleApplication {
             Vehicle bentley = Vehicle
                     .builder()
                     .year(2020)
-                    .model("bentley")
+                    .model("rolls-royce")
                     .build();
-
             Vehicle amg = Vehicle
                     .builder()
                     .year(2021)
