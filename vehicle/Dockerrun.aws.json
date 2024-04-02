@@ -1,12 +1,12 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "notenger/fleet-ms-vehicle-service",
+    "Name": "notenger/vehicle",
     "Update": "true"
   },
   "Ports": [
     {
-      "ContainerPort": 8082
+      "ContainerPort": 8080
     }
   ]
 }
