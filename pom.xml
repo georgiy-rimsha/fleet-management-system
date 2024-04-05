@@ -23,7 +23,9 @@
         <spring.boot.maven.plugin.version>3.0.0</spring.boot.maven.plugin.version>
         <spring.boot.dependencies.version>3.0.0</spring.boot.dependencies.version>
         <spring.cloud-version>2020.0.3</spring.cloud-version>
-        <image>notenger/${project.artifactId}:${project.version}</image>
+        <docker.username>notenger</docker.username>
+        <docker.image.name>${project.artifactId}</docker.image.name>
+        <docker.image.tag/>
     </properties>
 
     <dependencyManagement>
@@ -149,6 +151,7 @@
                             </platforms>
                         </from>
                         <to>
+                            <image>docker.io/${docker.username}/notenger:${docker.image.tag}</image>
                             <tags>
                                 <tag>latest</tag>
                             </tags>
