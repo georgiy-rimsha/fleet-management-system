@@ -151,7 +151,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>docker.io/${docker.username}/notenger:${docker.image.tag}</image>
+                            <image>docker.io/${docker.username}/vehicle:${docker.image.tag}</image>
                             <tags>
                                 <tag>latest</tag>
                             </tags>
