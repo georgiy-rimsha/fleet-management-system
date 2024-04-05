@@ -106,7 +106,7 @@ public class VehicleService {
         }
 
         vehicleDao.updateVehicle(vehicle);
-        
+
     }
 
     public void deleteVehicle(Integer vehicleId) {
