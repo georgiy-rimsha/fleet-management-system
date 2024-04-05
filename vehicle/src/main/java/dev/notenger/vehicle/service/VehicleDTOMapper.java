@@ -13,11 +13,11 @@ public class VehicleDTOMapper implements Function<Vehicle, VehicleDTO> {
 
         return new VehicleDTO(
                 vehicle.getId(),
-                vehicle.getVinNumber(),
-                vehicle.getDeviceId(),
+                vehicle.getVin(),
                 vehicle.getMake(),
                 vehicle.getModel(),
-                vehicle.getYear()
+                vehicle.getYear(),
+                vehicle.getDeviceId()
         );
     }
 }

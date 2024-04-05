@@ -3,8 +3,10 @@ package dev.notenger.simulation.device;
 import com.anylogic.engine.Point;
 import com.notenger.model.SimulationClient;
 import dev.notenger.clients.device.DeviceDTO;
+import dev.notenger.clients.device.InvalidVehicleIdException;
+import dev.notenger.clients.device.NoDeviceAvailableException;
 import dev.notenger.simulation.place.Place;
-import dev.notenger.simulation.place.PlaceRepository;
+import dev.notenger.simulation.place.PlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,10 @@ import java.util.Random;
 public class DeviceService {
 
     private final SimulationClient simulationClient;
-    private final PlaceRepository placeRepository;
+    private final PlaceService placeService;
 
-    public Device registerDevice(String placeName, double averageSpeed) {
-        Place place = placeRepository.findByName(placeName).orElseThrow();
+    public Device registerDevice(String placeName, Double averageSpeed) {
+        Place place = placeService.getPlaceByName(placeName);
         Device device = Device.builder()
                 .lastLocation(getRandomNearPoint(place.getLatitude(), place.getLongitude()))
                 .averageSpeed(averageSpeed)
@@ -54,25 +56,36 @@ public class DeviceService {
     }
 
     public Device reserveAndGetAvailableDevice(Integer vehicleId) {
-        Device device = (Device) simulationClient.findAllAvailableDeviceAgents().stream().findAny().orElseThrow();
+        if (vehicleId == null) {
+            throw new InvalidVehicleIdException("vehicle id is required");
+        }
+        Device device = (Device) simulationClient.findAllAvailableDeviceAgents()
+                .stream()
+                .findAny()
+                .orElseThrow(() -> new NoDeviceAvailableException(
+                        "no available devices found"
+                ));
+
         device.reserveForVehicle(vehicleId);
         return device;
     }
 
     public List<DeviceDTO> getAllDevices() {
-        return simulationClient.findAllDeviceAgents().stream().map(d -> (Device) d).map(d -> new DeviceDTO(
-                d.getID(),
-                d.getVehicleId(),
-                d.getDeviceSerialNumber(),
-                d.getAverageSpeed(),
-                d.getAvailable())).toList();
+        return simulationClient.findAllDeviceAgents().stream().map(d -> (Device) d)
+                .map(d -> new DeviceDTO(
+                    d.getID(),
+                    d.getVehicleId(),
+                    d.getSerialNumber(),
+                    d.getAverageSpeed(),
+                    d.getAvailable()))
+                .toList();
     }
 
     public DeviceDTO getDevice(Integer id) {
         return simulationClient.findAllDeviceAgents().stream().map(d -> (Device) d).map(d -> new DeviceDTO(
                 d.getID(),
                 d.getVehicleId(),
-                d.getDeviceSerialNumber(),
+                d.getSerialNumber(),
                 d.getAverageSpeed(),
                 d.getAvailable())).findAny().orElseThrow();
     }

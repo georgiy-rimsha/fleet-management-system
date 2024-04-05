@@ -20,7 +20,6 @@ public class InitData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
         placeService.addPlace("Paris", 48.856663, 2.351556);
         placeService.addPlace("Prague", 50.080345, 14.428974);
         placeService.addPlace("Rome", 41.887064, 12.504809);

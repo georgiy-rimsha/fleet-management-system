@@ -1,4 +1,4 @@
-package dev.notenger;
+package dev.notenger.vehicle;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

@@ -1,7 +1,7 @@
 package dev.notenger.vehicle.repository;
 
 import com.github.javafaker.Faker;
-import dev.notenger.AbstractTestcontainers;
+import dev.notenger.vehicle.AbstractTestcontainers;
 import dev.notenger.vehicle.entity.Vehicle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.ApplicationContext;
-
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,18 +33,22 @@ class VehicleRepositoryTest extends AbstractTestcontainers {
     @Test
     void existsVehicleById() {
         // Given
-        String model = FAKER.internet().domainName() + "-" + UUID.randomUUID();
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
+
         Vehicle vehicle = Vehicle
                 .builder()
-                .year(1999)
-                .model(model)
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
                 .build();
 
         underTest.save(vehicle);
 
         int id = underTest.findAll()
                 .stream()
-                .filter(v -> v.getModel().equals(model))
+                .filter(v -> v.getVin().equals(fakeVIN))
                 .map(Vehicle::getId)
                 .findFirst()
                 .orElseThrow();
@@ -71,31 +73,35 @@ class VehicleRepositoryTest extends AbstractTestcontainers {
     }
 
     @Test
-    void existsVehicleByModel() {
+    void existsVehicleByVin() {
         // Given
-        String model = FAKER.internet().domainName() + "-" + UUID.randomUUID();
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
+
         Vehicle vehicle = Vehicle
                 .builder()
-                .year(1999)
-                .model(model)
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
                 .build();
 
         underTest.save(vehicle);
 
         // When
-        var actual = underTest.existsVehicleByModel(model);
+        var actual = underTest.existsVehicleByVin(fakeVIN);
 
         // Then
         assertThat(actual).isTrue();
     }
 
     @Test
-    void existsVehicleByModelFailsWhenModelNotPresent() {
+    void existsVehicleByVinFailsWhenVinNotPresent() {
         // Given
-        String model = FAKER.internet().domainName() + "-" + UUID.randomUUID();
+        String fakeVIN = FAKER.bothify("1##?#??######");
 
         // When
-        var actual = underTest.existsVehicleByModel(model);
+        var actual = underTest.existsVehicleByVin(fakeVIN);
 
         // Then
         assertThat(actual).isFalse();

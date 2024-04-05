@@ -33,8 +33,8 @@ public class VehicleJPADataAccessService implements VehicleDao {
     }
 
     @Override
-    public boolean existsVehicleByModel(String model) {
-        return vehicleRepository.existsVehicleByModel(model);
+    public boolean existsVehicleByVin(String vin) {
+        return vehicleRepository.existsVehicleByVin(vin);
     }
 
     @Override

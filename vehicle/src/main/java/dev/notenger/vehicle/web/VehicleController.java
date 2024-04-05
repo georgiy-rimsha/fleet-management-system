@@ -20,7 +20,7 @@ public class VehicleController {
 
     @PostMapping
     public AddVehicleResponse addVehicle(@RequestBody AddVehicleRequest request) {
-        Vehicle vehicle = vehicleService.addVehicle(request.vinNumber(), request.make(), request.model(), request.year());
+        Vehicle vehicle = vehicleService.addVehicle(request.vin(), request.make(), request.model(), request.year());
         return new AddVehicleResponse(vehicle.getId());
     }
 
@@ -43,11 +43,12 @@ public class VehicleController {
     public void updateVehicle(
             @PathVariable("vehicleId") Integer vehicleId,
             @RequestBody UpdateVehicleRequest updateRequest) {
-        vehicleService.updateVehicle(vehicleId, updateRequest.make(), updateRequest.model(), updateRequest.year());
+        vehicleService.updateVehicle(
+                vehicleId, updateRequest.vin(), updateRequest.make(), updateRequest.model(), updateRequest.year());
     }
 
     @DeleteMapping("{vehicleId}")
-    public void deleteVehicle(@PathVariable("vehicleId") int vehicleId) {
+    public void deleteVehicle(@PathVariable("vehicleId") Integer vehicleId) {
         vehicleService.deleteVehicle(vehicleId);
     }
 

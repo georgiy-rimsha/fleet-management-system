@@ -1,7 +1,7 @@
 package dev.notenger.clients.vehicle;
 
 public record AddVehicleRequest(
-        String vinNumber,
+        String vin,
         String make,
         String model,
         Integer year) {

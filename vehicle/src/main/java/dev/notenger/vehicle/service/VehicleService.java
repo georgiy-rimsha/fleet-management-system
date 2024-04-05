@@ -3,14 +3,15 @@ package dev.notenger.vehicle.service;
 import dev.notenger.clients.device.DeviceClient;
 import dev.notenger.clients.device.ReserveDeviceRequest;
 import dev.notenger.clients.device.ReserveDeviceResponse;
-import dev.notenger.clients.telematics.TelematicsClient;
 import dev.notenger.vehicle.entity.Vehicle;
-import dev.notenger.vehicle.exception.ResourceNotFoundException;
+import dev.notenger.clients.vehicle.exception.DuplicateVehicleException;
+import dev.notenger.clients.vehicle.exception.InvalidVinException;
+import dev.notenger.clients.vehicle.exception.NoChangesDetectedException;
+import dev.notenger.clients.vehicle.exception.VehicleNotFoundException;
 import dev.notenger.vehicle.repository.VehicleDao;
 import dev.notenger.vehicle.web.VehicleDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,17 +24,22 @@ public class VehicleService {
     private final VehicleDTOMapper vehicleDTOMapper;
     private final DeviceClient deviceClient;
 
-    public Vehicle addVehicle(String vinNumber, String make, String model, Integer year) {
-        // check if model exists
-        if (vehicleDao.existsVehicleByModel(model)) {
-//            throw new IllegalArgumentException(
-//                    "model already taken"
-//            );
+    public Vehicle addVehicle(String vin, String make, String model, Integer year) {
+        // check if vin is neither null nor empty
+        if (vin == null || vin.isEmpty()) {
+            throw new InvalidVinException("vin is required");
+        }
+
+        // check if vin exists
+        if (vehicleDao.existsVehicleByVin(vin)) {
+            throw new DuplicateVehicleException(
+                    "vin already taken"
+            );
         }
 
         Vehicle vehicle = Vehicle
                 .builder()
-                .vinNumber(vinNumber)
+                .vin(vin)
                 .make(make)
                 .model(model)
                 .year(year)
@@ -43,10 +49,10 @@ public class VehicleService {
         return vehicle;
     }
 
-    public void bindToDevice(Integer id) {
-        Vehicle vehicle = vehicleDao.selectVehicleById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "vehicle with id [%s] not found".formatted(id)
+    public void bindToDevice(Integer vehicleId) {
+        Vehicle vehicle = vehicleDao.selectVehicleById(vehicleId)
+                .orElseThrow(() -> new VehicleNotFoundException(
+                        "vehicle with id [%s] not found".formatted(vehicleId)
                 ));
         ReserveDeviceRequest request = new ReserveDeviceRequest(vehicle.getId());
         ReserveDeviceResponse response = deviceClient.reserveDevice(request);
@@ -57,21 +63,36 @@ public class VehicleService {
     public VehicleDTO getVehicle(Integer id) {
         return vehicleDao.selectVehicleById(id)
                 .map(vehicleDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new VehicleNotFoundException(
                         "vehicle with id [%s] not found".formatted(id)
                 ));
     }
 
-    public void updateVehicle(Integer id, String make, String model, Integer year) {
+    public void updateVehicle(Integer id, String vin, String make, String model, Integer year) {
         Vehicle vehicle = vehicleDao.selectVehicleById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new VehicleNotFoundException(
                         "vehicle with id [%s] not found".formatted(id)
                 ));
 
         boolean changes = false;
 
+        if (vin != null && !vin.equals(vehicle.getVin())) {
+            if (vehicleDao.existsVehicleByVin(vin)) {
+                throw new DuplicateVehicleException(
+                        "vin already taken"
+                );
+            }
+            vehicle.setVin(vin);
+            changes = true;
+        }
+
         if (make != null && !make.equals(vehicle.getMake())) {
             vehicle.setMake(make);
+            changes = true;
+        }
+
+        if (model != null && !model.equals(vehicle.getModel())) {
+            vehicle.setModel(model);
             changes = true;
         }
 
@@ -80,32 +101,22 @@ public class VehicleService {
             changes = true;
         }
 
-        if (model != null && !model.equals(vehicle.getModel())) {
-            if (vehicleDao.existsVehicleByModel(model)) {
-                throw new IllegalArgumentException(
-                        "model already taken"
-                );
-            }
-            vehicle.setModel(model);
-            changes = true;
-        }
-
         if (!changes) {
-            throw new IllegalArgumentException("no data changes found");
+            throw new NoChangesDetectedException("no data changes found");
         }
 
         vehicleDao.updateVehicle(vehicle);
     }
 
-    public void deleteVehicle(Integer id) {
-        checkIfVehicleExistsOrThrow(id);
-        vehicleDao.deleteVehicleById(id);
+    public void deleteVehicle(Integer vehicleId) {
+        checkIfVehicleExistsOrThrow(vehicleId);
+        vehicleDao.deleteVehicleById(vehicleId);
     }
 
-    private void checkIfVehicleExistsOrThrow(Integer id) {
-        if (!vehicleDao.existsVehicleById(id)) {
-            throw new IllegalArgumentException(
-                    "vehicle with id [%s] not found".formatted(id)
+    private void checkIfVehicleExistsOrThrow(Integer vehicleId) {
+        if (!vehicleDao.existsVehicleById(vehicleId)) {
+            throw new VehicleNotFoundException(
+                    "vehicle with id [%s] not found".formatted(vehicleId)
             );
         }
     }

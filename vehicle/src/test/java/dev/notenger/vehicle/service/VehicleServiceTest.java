@@ -1,9 +1,13 @@
 package dev.notenger.vehicle.service;
 
+import com.github.javafaker.Faker;
 import dev.notenger.clients.device.DeviceClient;
 import dev.notenger.clients.telematics.TelematicsClient;
 import dev.notenger.clients.vehicle.AddVehicleRequest;
 import dev.notenger.clients.vehicle.UpdateVehicleRequest;
+import dev.notenger.clients.vehicle.exception.DuplicateVehicleException;
+import dev.notenger.clients.vehicle.exception.NoChangesDetectedException;
+import dev.notenger.clients.vehicle.exception.VehicleNotFoundException;
 import dev.notenger.vehicle.entity.Vehicle;
 import dev.notenger.vehicle.repository.VehicleDao;
 import dev.notenger.vehicle.web.VehicleDTO;
@@ -15,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,8 +30,11 @@ class VehicleServiceTest {
 
     VehicleService underTest;
     @Mock VehicleDao vehicleDao;
-    @Mock DeviceClient deviceClient;;
+    @Mock DeviceClient deviceClient;
     VehicleDTOMapper vehicleDTOMapper = new VehicleDTOMapper();
+
+    protected static final Faker FAKER = new Faker();
+    private static final Random random = new Random();
 
     @BeforeEach
     void setUp() {
@@ -36,45 +44,40 @@ class VehicleServiceTest {
     @Test
     void addVehicle() {
         // Given
-        String model = "Porsche";
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
 
-        when(vehicleDao.existsVehicleByModel(model)).thenReturn(false);
-
-//        CreateVehicleRequest request = new CreateVehicleRequest(56., 67., 90., model);
-        AddVehicleRequest request = new AddVehicleRequest(
-                "10.", "10.", "speed", 9999
-        );
+        when(vehicleDao.existsVehicleByVin(fakeVIN)).thenReturn(false);
 
         // When
-//        underTest.addVehicle(request);
+        underTest.addVehicle(fakeVIN, fakeMake, fakeModel, null);
 
         // Then
         ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
 
         verify(vehicleDao).insertVehicle(vehicleArgumentCaptor.capture());
-//        verify(telematicsClient).registerVehicleAgent(any());
 
         Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
 
         assertThat(capturedVehicle.getId()).isNull();
-        assertThat(capturedVehicle.getModel()).isEqualTo(request.model());
-//        assertThat(capturedVehicle.getAverageSpeed()).isEqualTo(request.speed());
+        assertThat(capturedVehicle.getVin()).isEqualTo(fakeVIN);
+        assertThat(capturedVehicle.getMake()).isEqualTo(fakeMake);
+        assertThat(capturedVehicle.getModel()).isEqualTo(fakeModel);
     }
 
     @Test
-    void willThrowWhenModelExistsWhileAddingAVehicle() {
+    void willThrowWhenVinExistsWhileAddingVehicle() {
         // Given
-        String model = "Porsche";
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
 
-        when(vehicleDao.existsVehicleByModel(model)).thenReturn(true);
-
-//        CreateVehicleRequest request = new CreateVehicleRequest(56., 67., 90., model);
-        AddVehicleRequest request = new AddVehicleRequest(
-                "10.", "10.", "speed", 9999
-        );
+        when(vehicleDao.existsVehicleByVin(fakeVIN)).thenReturn(true);
 
         // When
-//        assertThatThrownBy(() -> underTest.addVehicle(request)).isInstanceOf(IllegalArgumentException.class).hasMessage("model already taken");
+        assertThatThrownBy(() -> underTest.addVehicle(fakeVIN, fakeMake, fakeModel, null))
+                .isInstanceOf(DuplicateVehicleException.class).hasMessage("vin already taken");
 
         // Then
         verify(vehicleDao, never()).insertVehicle(any());
@@ -84,13 +87,18 @@ class VehicleServiceTest {
     void canGetVehicle() {
         // Given
         int id = 10;
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
         VehicleDTO expected = vehicleDTOMapper.apply(vehicle);
 
@@ -102,7 +110,7 @@ class VehicleServiceTest {
     }
 
     @Test
-    void willThrowWhenGetCustomerReturnEmptyOptional() {
+    void willThrowWhenGetVehicleReturnEmptyOptional() {
         // Given
         int id = 10;
 
@@ -110,33 +118,40 @@ class VehicleServiceTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> underTest.getVehicle(id)).isInstanceOf(IllegalArgumentException.class).hasMessage("vehicle with id [%s] not found".formatted(id));
+        assertThatThrownBy(() -> underTest.getVehicle(id))
+                .isInstanceOf(VehicleNotFoundException.class).hasMessage("vehicle with id [%s] not found".formatted(id));
     }
 
     @Test
     void canUpdateAllVehiclesProperties() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-        String newModel = "Forester";
+        String newVIN = "2T1BU4EE3CC123456";
 
-//        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(120., "Subaru", newModel);
-        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(
-                null, "newMake", null
-        );
-
-        when(vehicleDao.existsVehicleByModel(newModel)).thenReturn(false);
+        when(vehicleDao.existsVehicleByVin(newVIN)).thenReturn(false);
 
         // When
-//        underTest.updateVehicle(id, updateRequest);
+        String newMake = "Global Automotive";
+        String newModel = "Spectra";
+        Integer newYear = 2018;
+
+        underTest.updateVehicle(id, newVIN, newMake, newModel, newYear);
 
         // Then
         ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
@@ -144,28 +159,38 @@ class VehicleServiceTest {
         verify(vehicleDao).updateVehicle(vehicleArgumentCaptor.capture());
         Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
 
-        assertThat(capturedVehicle.getModel()).isEqualTo(updateRequest.model());
-        assertThat(capturedVehicle.getMake()).isEqualTo(updateRequest.make());
-//        assertThat(capturedVehicle.getAverageSpeed()).isEqualTo(updateRequest.speed());
+        assertThat(capturedVehicle.getVin()).isEqualTo(newVIN);
+        assertThat(capturedVehicle.getMake()).isEqualTo(newMake);
+        assertThat(capturedVehicle.getModel()).isEqualTo(newModel);
+        assertThat(capturedVehicle.getYear()).isEqualTo(newYear);
     }
 
     @Test
-    void canUpdateOnlyVehicleSpeed() {
+    void canUpdateOnlyVehicleVin() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-//        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(120., null, null);
+        String newVIN = "2T1BU4EE3CC123456";
+
+        when(vehicleDao.existsVehicleByVin(newVIN)).thenReturn(false);
 
         // When
-//        underTest.updateVehicle(id, updateRequest);
+        underTest.updateVehicle(id, newVIN, null, null, null);
 
         // Then
         ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
@@ -173,28 +198,35 @@ class VehicleServiceTest {
         verify(vehicleDao).updateVehicle(vehicleArgumentCaptor.capture());
         Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
 
-        assertThat(capturedVehicle.getModel()).isEqualTo(vehicle.getModel());
+        assertThat(capturedVehicle.getVin()).isEqualTo(newVIN);
         assertThat(capturedVehicle.getMake()).isEqualTo(vehicle.getMake());
-//        assertThat(capturedVehicle.getAverageSpeed()).isEqualTo(updateRequest.speed());
+        assertThat(capturedVehicle.getModel()).isEqualTo(vehicle.getModel());
+        assertThat(capturedVehicle.getYear()).isEqualTo(vehicle.getYear());
     }
 
     @Test
     void canUpdateOnlyVehicleMake() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(null, "Subaru", null);
-
         // When
-//        underTest.updateVehicle(id, updateRequest);
+        String newMake = "Global Automotive";
+        underTest.updateVehicle(id, null, newMake, null, null);
 
         // Then
         ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
@@ -202,32 +234,35 @@ class VehicleServiceTest {
         verify(vehicleDao).updateVehicle(vehicleArgumentCaptor.capture());
         Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
 
+        assertThat(capturedVehicle.getVin()).isEqualTo(vehicle.getVin());
+        assertThat(capturedVehicle.getMake()).isEqualTo(newMake);
         assertThat(capturedVehicle.getModel()).isEqualTo(vehicle.getModel());
-        assertThat(capturedVehicle.getMake()).isEqualTo(updateRequest.make());
-//        assertThat(capturedVehicle.getAverageSpeed()).isEqualTo(vehicle.getAverageSpeed());
+        assertThat(capturedVehicle.getYear()).isEqualTo(vehicle.getYear());
     }
 
     @Test
     void canUpdateOnlyVehicleModel() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-        String newModel = "Forester";
-
-//        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(null, null, newModel);
-
-        when(vehicleDao.existsVehicleByModel(newModel)).thenReturn(false);
-
         // When
-//        underTest.updateVehicle(id, updateRequest);
+        String newModel = "Spectra";
+        underTest.updateVehicle(id, null, null, newModel, null);
 
         // Then
         ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
@@ -235,32 +270,75 @@ class VehicleServiceTest {
         verify(vehicleDao).updateVehicle(vehicleArgumentCaptor.capture());
         Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
 
-//        assertThat(capturedVehicle.getModel()).isEqualTo(updateRequest.model());
+        assertThat(capturedVehicle.getVin()).isEqualTo(vehicle.getVin());
         assertThat(capturedVehicle.getMake()).isEqualTo(vehicle.getMake());
-//        assertThat(capturedVehicle.getAverageSpeed()).isEqualTo(vehicle.getAverageSpeed());
+        assertThat(capturedVehicle.getModel()).isEqualTo(newModel);
+        assertThat(capturedVehicle.getYear()).isEqualTo(vehicle.getYear());
     }
 
     @Test
-    void willThrowWhenTryingToUpdateVehicleModelWhenAlreadyTaken() {
+    void canUpdateOnlyVehicleYear() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-        String newModel = "Forester";
+        // When
+        Integer newYear = 2018;
+        underTest.updateVehicle(id, null, null, null, newYear);
 
-//        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(null, null, newModel);
+        // Then
+        ArgumentCaptor<Vehicle> vehicleArgumentCaptor = ArgumentCaptor.forClass(Vehicle.class);
 
-        when(vehicleDao.existsVehicleByModel(newModel)).thenReturn(true);
+        verify(vehicleDao).updateVehicle(vehicleArgumentCaptor.capture());
+        Vehicle capturedVehicle = vehicleArgumentCaptor.getValue();
+
+        assertThat(capturedVehicle.getVin()).isEqualTo(vehicle.getVin());
+        assertThat(capturedVehicle.getMake()).isEqualTo(vehicle.getMake());
+        assertThat(capturedVehicle.getModel()).isEqualTo(vehicle.getModel());
+        assertThat(capturedVehicle.getYear()).isEqualTo(newYear);
+    }
+
+    @Test
+    void willThrowWhenTryingToUpdateVehicleVinWhenAlreadyTaken() {
+        // Given
+        int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
+        Vehicle vehicle = Vehicle
+                .builder()
+                .id(id)
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
+                .build();
+
+        when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
+
+        String newVIN = "2T1BU4EE3CC123456";
+
+        when(vehicleDao.existsVehicleByVin(newVIN)).thenReturn(true);
 
         // When
-//        assertThatThrownBy(() -> underTest.updateVehicle(id, updateRequest)).isInstanceOf(IllegalArgumentException.class).hasMessage("model already taken");
+        assertThatThrownBy(() -> underTest.updateVehicle(id, newVIN, null, null, null))
+                .isInstanceOf(DuplicateVehicleException.class).hasMessage("vin already taken");
 
         // Then
         verify(vehicleDao, never()).updateVehicle(any());
@@ -270,19 +348,30 @@ class VehicleServiceTest {
     void willThrowWhenVehicleUpdateHasNoChanges() {
         // Given
         int id = 10;
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
+
         Vehicle vehicle = Vehicle
                 .builder()
                 .id(id)
-                .year(1999)
-                .model("Cruiser")
-                .make("Toyota")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
+                .year(fakeYear)
                 .build();
+
         when(vehicleDao.selectVehicleById(id)).thenReturn(Optional.of(vehicle));
 
-//        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(vehicle.getAverageSpeed(), vehicle.getMake(), vehicle.getModel());
-
         // When
-//        assertThatThrownBy(() -> underTest.updateVehicle(id, updateRequest)).isInstanceOf(IllegalArgumentException.class).hasMessage("no data changes found");
+        assertThatThrownBy(() -> underTest.updateVehicle(
+                id,
+                vehicle.getVin(),
+                vehicle.getMake(),
+                vehicle.getModel(),
+                vehicle.getYear())
+        ).isInstanceOf(NoChangesDetectedException.class).hasMessage("no data changes found");
 
         // Then
         verify(vehicleDao, never()).updateVehicle(any());
@@ -309,7 +398,9 @@ class VehicleServiceTest {
         when(vehicleDao.existsVehicleById(id)).thenReturn(false);
 
         // When
-        assertThatThrownBy(() -> underTest.deleteVehicle(id)).isInstanceOf(IllegalArgumentException.class).hasMessage("vehicle with id [%s] not found".formatted(id));
+        assertThatThrownBy(() -> underTest.deleteVehicle(id))
+                .isInstanceOf(VehicleNotFoundException.class)
+                .hasMessage("vehicle with id [%s] not found".formatted(id));
 
         // Then
         verify(vehicleDao, never()).deleteVehicleById(id);

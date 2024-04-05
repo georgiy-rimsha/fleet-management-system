@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
         name = "device",
-        url = "${clients.device.url}"
+        url = "${clients.device.url}",
+        configuration = CustomErrorDecoder.class
 )
 @RequestMapping("/api/v1/devices")
 public interface DeviceClient {

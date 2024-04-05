@@ -1,5 +1,6 @@
 package dev.notenger.vehicle.repository;
 
+import com.github.javafaker.Faker;
 import dev.notenger.vehicle.entity.Vehicle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,8 @@ class VehicleJPADataAccessServiceTest {
     private AutoCloseable autoCloseable;
 
     @Mock private VehicleRepository vehicleRepository;
+
+    protected static final Faker FAKER = new Faker();
 
     @BeforeEach
     void setUp() {
@@ -51,10 +54,15 @@ class VehicleJPADataAccessServiceTest {
     @Test
     void insertVehicle() {
         // Given
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
+
         Vehicle vehicle = Vehicle
                 .builder()
-                .year(1999)
-                .model("Rolls")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
                 .build();
 
         // When
@@ -91,10 +99,15 @@ class VehicleJPADataAccessServiceTest {
     @Test
     void updateVehicle() {
         // Given
+        String fakeVIN = FAKER.bothify("1##?#??######");
+        String fakeMake = FAKER.company().name();
+        String fakeModel = FAKER.lorem().word();
+
         Vehicle vehicle = Vehicle
                 .builder()
-                .year(1999)
-                .model("Rolls")
+                .vin(fakeVIN)
+                .make(fakeMake)
+                .model(fakeModel)
                 .build();
 
         // When

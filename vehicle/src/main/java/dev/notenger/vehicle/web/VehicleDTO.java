@@ -7,9 +7,9 @@ import java.util.Objects;
 
 public record VehicleDTO(
         Integer id,
-        String vinNumber,
-        Integer deviceId,
+        String vin,
         String make,
         String model,
-        Integer year) {
+        Integer year,
+        Integer deviceId) {
 }

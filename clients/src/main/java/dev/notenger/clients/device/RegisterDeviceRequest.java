@@ -1,7 +1,7 @@
 package dev.notenger.clients.device;
 
 public record RegisterDeviceRequest(
-        String deviceSerialNumber,
+        String serialNumber,
         String placeName,
-        double averageSpeed) {
+        Double averageSpeed) {
 }

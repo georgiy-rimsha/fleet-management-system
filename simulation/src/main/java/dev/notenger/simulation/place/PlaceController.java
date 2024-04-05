@@ -1,5 +1,7 @@
 package dev.notenger.simulation.place;
 
+import dev.notenger.clients.place.AddPlaceRequest;
+import dev.notenger.clients.place.PlaceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,7 @@ public class PlaceController {
     }
 
     @GetMapping
-    public List<Place> getPlaces() {
+    public List<PlaceDTO> getPlaces() {
         return placeService.getAllPlaces();
     }
 

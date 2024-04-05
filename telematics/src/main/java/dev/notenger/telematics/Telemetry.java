@@ -1,10 +1,10 @@
 package dev.notenger.telematics;
 
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import java.util.List;
 
 @Document("telemetry")

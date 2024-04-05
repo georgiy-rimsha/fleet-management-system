@@ -1,4 +1,4 @@
-package dev.notenger.simulation.place;
+package dev.notenger.clients.place;
 
 public record AddPlaceRequest(
         String name,

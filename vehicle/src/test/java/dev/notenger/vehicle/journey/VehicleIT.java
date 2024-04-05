@@ -1,7 +1,6 @@
-package dev.notenger.journey;
+package dev.notenger.vehicle.journey;
 
 import com.github.javafaker.Faker;
-import com.github.javafaker.Name;
 import dev.notenger.clients.vehicle.AddVehicleRequest;
 import dev.notenger.clients.vehicle.UpdateVehicleRequest;
 import dev.notenger.vehicle.web.VehicleDTO;
@@ -15,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -32,20 +30,17 @@ public class VehicleIT {
     void canCreateVehicle() {
         // create registration request
         Faker faker = new Faker();
-        Name fakerName = faker.name();
+        String fakeVIN = faker.bothify("1##?#??######");
+        String fakeMake = faker.company().name();
+        String fakeModel = faker.lorem().word();
+        Integer fakeYear = RANDOM.nextInt(1990, 2023);
 
-        String model = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        double speed = RANDOM.nextDouble(30, 120);
-
-//        AddVehicleRequest request = new AddVehicleRequest(
-//                10., 10., speed, model
-//        );
         AddVehicleRequest request = new AddVehicleRequest(
-                "10.", "10.", "speed", 9999
+                fakeVIN, fakeMake, fakeModel, fakeYear
         );
         // send a post request
         webTestClient.post()
-                .uri(VEHICLE_PATH + "/add")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), AddVehicleRequest.class)
@@ -53,9 +48,9 @@ public class VehicleIT {
                 .expectStatus()
                 .isOk();
 
-        // get all customers
+        // get all vehicles
         List<VehicleDTO> allVehicles = webTestClient.get()
-                .uri(VEHICLE_PATH + "/get")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -66,26 +61,21 @@ public class VehicleIT {
                 .getResponseBody();
 
         int id = allVehicles.stream()
-                .filter(vehicle -> vehicle.model().equals(model))
+                .filter(vehicle -> vehicle.vin().equals(fakeVIN))
                 .map(VehicleDTO::id)
                 .findFirst()
                 .orElseThrow();
 
         // make sure that vehicle is present
         VehicleDTO expectedVehicle = new VehicleDTO(
-          id,
-                null,
-            null,
-            model,
-            null,
-            (int)speed
+          id, fakeVIN, fakeMake, fakeModel, fakeYear,null
         );
 
         assertThat(allVehicles).contains(expectedVehicle);
 
         // get vehicle by id
         webTestClient.get()
-                .uri(VEHICLE_PATH + "/get" + "/{id}", id)
+                .uri(VEHICLE_PATH + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -99,20 +89,17 @@ public class VehicleIT {
     void canDeleteVehicle() {
         // create registration request
         Faker faker = new Faker();
-        Name fakerName = faker.name();
+        String fakeVIN = faker.bothify("1##?#??######");
+        String fakeMake = faker.company().name();
+        String fakeModel = faker.lorem().word();
+        Integer fakeYear = RANDOM.nextInt(1990, 2023);
 
-        String model = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        double speed = RANDOM.nextDouble(30, 120);
-
-//        CreateVehicleRequest request = new CreateVehicleRequest(
-//                10., 10., speed, model
-//        );
         AddVehicleRequest request = new AddVehicleRequest(
-                "10.", "10.", "speed", 9999
+                fakeVIN, fakeMake, fakeModel, fakeYear
         );
         // send a post request
         webTestClient.post()
-                .uri(VEHICLE_PATH + "/add")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), AddVehicleRequest.class)
@@ -122,7 +109,7 @@ public class VehicleIT {
 
         // get all vehicles
         List<VehicleDTO> allVehicles = webTestClient.get()
-                .uri(VEHICLE_PATH + "/get")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -133,19 +120,14 @@ public class VehicleIT {
                 .getResponseBody();
 
         int id = allVehicles.stream()
-                .filter(vehicle -> vehicle.model().equals(model))
+                .filter(vehicle -> vehicle.vin().equals(fakeVIN))
                 .map(VehicleDTO::id)
                 .findFirst()
                 .orElseThrow();
 
         // make sure that vehicle is present
         VehicleDTO expectedVehicle = new VehicleDTO(
-                id,
-                null,
-                null,
-                model,
-                null,
-                (int)speed
+                id, fakeVIN, fakeMake, fakeModel, fakeYear,null
         );
 
         assertThat(allVehicles).contains(expectedVehicle);
@@ -160,7 +142,7 @@ public class VehicleIT {
 
         // get vehicle by id
         webTestClient.get()
-                .uri(VEHICLE_PATH + "/get" + "/{id}", id)
+                .uri(VEHICLE_PATH + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -170,21 +152,17 @@ public class VehicleIT {
     @Test
     void canUpdateVehicle() {
         // create registration request
-        Faker faker = new Faker();
-        Name fakerName = faker.name();
+        String fakeVIN = "1G6DC5EY3B0123456";
+        String fakeMake = "Acme Motors";
+        String fakeModel = "Phantom";
+        Integer fakeYear = 2022;
 
-        String model = fakerName.lastName() + "-" + UUID.randomUUID() + "@gmail.com";
-        double speed = RANDOM.nextDouble(30, 120);
-
-//        CreateVehicleRequest request = new CreateVehicleRequest(
-//                10., 10., speed, model
-//        );
         AddVehicleRequest request = new AddVehicleRequest(
-                "10.", "10.", "speed", 9999
+                fakeVIN, fakeMake, fakeModel, fakeYear
         );
         // send a post request
         webTestClient.post()
-                .uri(VEHICLE_PATH + "/add")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), AddVehicleRequest.class)
@@ -194,7 +172,7 @@ public class VehicleIT {
 
         // get all vehicles
         List<VehicleDTO> allVehicles = webTestClient.get()
-                .uri(VEHICLE_PATH + "/get")
+                .uri(VEHICLE_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -205,17 +183,14 @@ public class VehicleIT {
                 .getResponseBody();
 
         int id = allVehicles.stream()
-                .filter(vehicle -> vehicle.model().equals(model))
+                .filter(vehicle -> vehicle.vin().equals(fakeVIN))
                 .map(VehicleDTO::id)
                 .findFirst()
                 .orElseThrow();
 
         // update vehicle by id
-        String newMake = "Tesla";
-
-        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(
-                null, newMake, null
-        );
+        String newMake = "Global Automotive";
+        UpdateVehicleRequest updateRequest = new UpdateVehicleRequest(null, newMake, null, null);
 
         webTestClient.put()
                 .uri(VEHICLE_PATH + "/{id}", id)
@@ -228,7 +203,7 @@ public class VehicleIT {
 
         // get vehicle by id
         VehicleDTO updatedVehicle = webTestClient.get()
-                .uri(VEHICLE_PATH + "/get" + "/{id}", id)
+                .uri(VEHICLE_PATH + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -237,13 +212,10 @@ public class VehicleIT {
                 .returnResult()
                 .getResponseBody();
 
-        VehicleDTO expected = new VehicleDTO(
-            id,
-            null,
-            null,
-            model,
-            null,
-            (int) speed
+        VehicleDTO expectedVehicle = new VehicleDTO(
+                id, fakeVIN, newMake, fakeModel, fakeYear,null
         );
+
+        assertThat(updatedVehicle).isEqualTo(expectedVehicle);
     }
 }

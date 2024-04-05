@@ -28,8 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Device extends DeviceAgent {
     private Integer ID;
     private Integer vehicleId;
-    private String deviceSerialNumber;
-    private double averageSpeed;
+    private String serialNumber;
+    private Double averageSpeed;
     private Boolean available;
     private double odometer;
     private double fuelGauge;
@@ -62,7 +62,6 @@ public class Device extends DeviceAgent {
 
     public void updateGauges() {
         Point currentLocation = new Point().setLatLon(getLatitude(), getLongitude());
-
         double distanceTraveled = calculateDistance(lastLocation, currentLocation); // KM
 //        double timeTaken = calculateTime(lastTime, currentTime); // sec
         double actualSpeed = getSpeed(KPH); // calculateSpeed(distanceTraveled, timeTaken);

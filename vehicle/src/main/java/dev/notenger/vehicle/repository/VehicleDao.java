@@ -10,7 +10,7 @@ public interface VehicleDao {
     Optional<Vehicle> selectVehicleById(Integer VehicleId);
     void insertVehicle(Vehicle Vehicle);
     boolean existsVehicleById(Integer VehicleId);
-    boolean existsVehicleByModel(String model);
+    boolean existsVehicleByVin(String vin);
     void deleteVehicleById(Integer VehicleId);
     void updateVehicle(Vehicle update);
 }

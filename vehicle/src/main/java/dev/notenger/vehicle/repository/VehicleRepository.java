@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
     boolean existsVehicleById(Integer id);
-    boolean existsVehicleByModel(String model);
+    boolean existsVehicleByVin(String model);
 
 }
