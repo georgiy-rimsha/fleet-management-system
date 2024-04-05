@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "notenger/vehicle:latest",
+    "Name": "notenger/vehicle:05.04.2024.19.46.34",
     "Update": "true"
   },
   "Ports": [
