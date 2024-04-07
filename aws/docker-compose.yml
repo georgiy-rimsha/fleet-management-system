@@ -1,0 +1,35 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+      - "61613:61613"
+    networks:
+      - spring
+  simulation:
+    image: notenger/simulation:latest
+    container_name: simulation
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - rabbitmq
+  vehicle:
+    image: notenger/vehicle:latest
+    container_name: vehicle
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+
+networks:
+  spring:
+    driver: bridge
