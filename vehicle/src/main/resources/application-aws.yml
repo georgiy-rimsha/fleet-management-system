@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://fleet-ms-vehicle-db.cv4mqy2smx4o.eu-central-1.rds.amazonaws.com:5432/vehicle
+    username: notenger
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format-sql: true
+    show-sql: true
