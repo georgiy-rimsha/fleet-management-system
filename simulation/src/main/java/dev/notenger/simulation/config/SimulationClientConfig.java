@@ -17,7 +17,7 @@ public class SimulationClientConfig implements SimulationCallback {
 
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
-    
+
     @Bean
     public SimulationClient simulationClient() {
         final SimulationClient client = new SimulationClient();
