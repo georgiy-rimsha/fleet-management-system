@@ -75,11 +75,11 @@
                                 <goal>reserve-network-port</goal>
                             </goals>
                             <phase>process-resources</phase>
-                            <configuration>
-                                <portNames>
-                                    <portName>tomcat.http.port</portName>
-                                </portNames>
-                            </configuration>
+<!--                            <configuration>-->
+<!--                                <portNames>-->
+<!--                                    <portName>tomcat.http.port</portName>-->
+<!--                                </portNames>-->
+<!--                            </configuration>-->
                         </execution>
                     </executions>
                 </plugin>
@@ -93,11 +93,11 @@
                             <goals>
                                 <goal>start</goal>
                             </goals>
-                            <configuration>
-                                <arguments>
-                                    <argument>--server.port=${tomcat.http.port}</argument>
-                                </arguments>
-                            </configuration>
+<!--                            <configuration>-->
+<!--                                <arguments>-->
+<!--                                    <argument>-server.port=${tomcat.http.port}</argument>-->
+<!--                                </arguments>-->
+<!--                            </configuration>-->
                         </execution>
                         <execution>
                             <id>post-integration-test</id>
@@ -127,9 +127,9 @@
                             <include>**/*IntegrationTest.java</include>
                             <include>**/*IT.java</include>
                         </includes>
-                        <systemPropertyVariables>
-                            <test.server.port>${tomcat.http.port}</test.server.port>
-                        </systemPropertyVariables>
+<!--                        <systemPropertyVariables>-->
+<!--                            <test.server.port>${tomcat.http.port}</test.server.port>-->
+<!--                        </systemPropertyVariables>-->
                     </configuration>
                 </plugin>
                 <plugin>
@@ -151,7 +151,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>docker.io/${docker.username}/vehicle:${docker.image.tag}</image>
+                            <image>docker.io/${docker.username}/${docker.image.name}:${docker.image.tag}</image>
                             <tags>
                                 <tag>latest</tag>
                             </tags>
