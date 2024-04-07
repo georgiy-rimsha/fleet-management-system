@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+spring:
+  rabbitmq:
+    addresses: rabbitmq:5672

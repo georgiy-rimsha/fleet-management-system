@@ -1,12 +1,11 @@
 services:
-  rabbitmq:
-    image: rabbitmq:3.9.11-management-alpine
-    container_name: rabbitmq
+  vehicle:
+    image: notenger/vehicle:07.04.2024.18.26.32
+    container_name: vehicle
     ports:
-      - "5672:5672"
-      - "15672:15672"
-      - "15671:15671"
-      - "61613:61613"
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: aws
     networks:
       - spring
   simulation:
@@ -15,18 +14,31 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_PROFILES_ACTIVE: aws
     networks:
       - spring
     depends_on:
       - rabbitmq
-  vehicle:
-    image: notenger/vehicle:07.04.2024.18.26.32
-    container_name: vehicle
+  telematics:
+    image: notenger/telematics:latest
+    container_name: telematics
     ports:
-      - "8080:8080"
+      - "8082:8082"
+      - "27017:27017"
     environment:
-      - SPRING_PROFILES_ACTIVE=aws
+      SPRING_PROFILES_ACTIVE: aws
+    networks:
+      - spring
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+      - "61613:61613"
     networks:
       - spring
 

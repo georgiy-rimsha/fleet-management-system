@@ -51,6 +51,6 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add ./aws/docker-compose.yml
+          git add aws/docker-compose.yml
           git commit -m "updated aws/docker-compose.yml docker image with new tag ${{ steps.build-number.outputs.BUILD_NUMBER }}"
           git push
