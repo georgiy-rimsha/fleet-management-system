@@ -21,7 +21,7 @@ services:
     depends_on:
       - rabbitmq
   vehicle:
-    image: notenger/vehicle:07.04.2024.18.02.00
+    image: notenger/vehicle:07.04.2024.18.26.32
     container_name: vehicle
     ports:
       - "8080:8080"
