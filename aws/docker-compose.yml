@@ -1,6 +1,6 @@
 services:
   vehicle:
-    image: notenger/vehicle:07.04.2024.18.26.32
+    image: notenger/vehicle:08.04.2024.08.22.54
     container_name: vehicle
     ports:
       - "8080:8080"
