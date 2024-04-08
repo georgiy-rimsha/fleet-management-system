@@ -62,7 +62,7 @@ jobs:
           version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
           version_description: ${{ github.SHA }}
           region: ${{ secrets.EB_REGION }}
-          deployment_package: aws/docker-compose.yml
+          deployment_package: aws/deploy.zip
       - name: Commit and push aws/docker-compose.yml
         run: |
           git config user.name github-actions
