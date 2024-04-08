@@ -36,6 +36,8 @@ jobs:
           sed -i -E 's_(notenger/telematics:)([^"]*)_\1'${{steps.build-number.outputs.BUILD_NUMBER}}'_' ./aws/docker-compose.yml
           echo "aws/docker-compose.yml after updating tag"
           cat ./aws/docker-compose.yml
+      - name: Generate deployment package
+        run: zip -r deploy.zip ./aws
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
