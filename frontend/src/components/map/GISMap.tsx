@@ -45,8 +45,7 @@ const landmarkIcon = new Icon({
   iconSize: [38, 38],
 });
 
-const SOCKET_URL =
-  "http://fmvs.eu-central-1.elasticbeanstalk.com:8082/ws-message";
+const SOCKET_URL = "http://localhost:8082/ws-message";
 let onConnected = () => {
   console.log("Connected!!");
 };
@@ -70,6 +69,7 @@ export default function GISMap() {
     getVehicles()
       .then((res) => {
         setVehicles(res.data);
+        console.log(res.data);
       })
       .catch((err) => {
         console.log("Error trying fetch vehicles", JSON.stringify(err));

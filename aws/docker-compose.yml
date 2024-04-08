@@ -1,15 +1,15 @@
 services:
-  vehicle:
-    image: notenger/vehicle:07.04.2024.18.26.32
-    container_name: vehicle
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: aws
-    networks:
-      - spring
+#  vehicle:
+#    image: notenger/vehicle:08.04.2024.08.22.54
+#    container_name: vehicle
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_PROFILES_ACTIVE: aws
+#    networks:
+#      - spring
   simulation:
-    image: notenger/simulation:07.04.2024.19.50.45
+    image: notenger/simulation:08.04.2024.08.19.14
     container_name: simulation
     ports:
       - "8081:8081"
@@ -20,7 +20,7 @@ services:
     depends_on:
       - rabbitmq
   telematics:
-    image: notenger/telematics:latest
+    image: notenger/telematics:08.04.2024.08.19.12
     container_name: telematics
     ports:
       - "8082:8082"

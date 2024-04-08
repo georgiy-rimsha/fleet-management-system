@@ -21,12 +21,12 @@ services:
       - "15672:15672"
       - "15671:15671"
       - "61613:61613"
-    volumes:
-      - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
+#    volumes:
+#      - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
     networks:
       - spring
   vehicle:
-    image: notenger/vehicle:latest
+    image: notenger/vehicle:08.04.2024.08.22.54
     container_name: vehicle
     ports:
       - "8080:8080"
@@ -38,7 +38,7 @@ services:
     depends_on:
       - postgres
   simulation:
-    image: notenger/simulation:latest
+    image: notenger/simulation:08.04.2024.08.19.14
     container_name: simulation
     ports:
       - "8081:8081"
@@ -50,7 +50,7 @@ services:
       - postgres
       - rabbitmq
   telematics:
-    image: notenger/telematics:latest
+    image: notenger/telematics:08.04.2024.08.19.12
     container_name: telematics
     ports:
       - "8082:8082"
