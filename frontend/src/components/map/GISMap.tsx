@@ -45,7 +45,8 @@ const landmarkIcon = new Icon({
   iconSize: [38, 38],
 });
 
-const SOCKET_URL = "http://localhost:8082/ws-message";
+const SOCKET_URL =
+  "https://fmvs.eu-central-1.elasticbeanstalk.com/telematics/ws-message";
 let onConnected = () => {
   console.log("Connected!!");
 };
@@ -79,7 +80,7 @@ export default function GISMap() {
 
   useEffect(() => {
     fetchLocations();
-    fetchVehicles();
+    // fetchVehicles();
     console.log(vehicles);
   }, []);
 
