@@ -20,7 +20,7 @@ services:
     depends_on:
       - rabbitmq
   telematics:
-    image: notenger/telematics:08.04.2024.08.19.12
+    image: notenger/telematics:08.04.2024.12.59.39
     container_name: telematics
     ports:
       - "8082:8082"
