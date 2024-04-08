@@ -45,7 +45,8 @@ const landmarkIcon = new Icon({
   iconSize: [38, 38],
 });
 
-const SOCKET_URL = "http://localhost:8082/ws-message";
+const SOCKET_URL =
+  "http://fmvs.eu-central-1.elasticbeanstalk.com:8082/ws-message";
 let onConnected = () => {
   console.log("Connected!!");
 };

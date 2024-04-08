@@ -8,21 +8,20 @@ import org.springframework.web.bind.annotation.*;
         url = "${clients.device.url}",
         configuration = CustomErrorDecoder.class
 )
-@RequestMapping("/api/v1/devices")
 public interface DeviceClient {
 
-    @GetMapping("{deviceId}")
+    @GetMapping("api/v1/devices/{deviceId}")
     DeviceDTO getDevice(@PathVariable("deviceId") Integer deviceId);
 
-    @PostMapping
+    @PostMapping("api/v1/devices")
     RegisterDeviceResponse registerDevice(@RequestBody RegisterDeviceRequest request);
 
-    @DeleteMapping("{deviceId}")
+    @DeleteMapping("api/v1/devices/{deviceId}")
     void unregisterDevice(@PathVariable("deviceId") Integer deviceId);
 
-    @PutMapping("{deviceId}")
+    @PutMapping("api/v1/devices/{deviceId}")
     void updateDevice(@PathVariable("deviceId") Integer deviceId, @RequestBody UpdateDeviceRequest request);
 
-    @PutMapping("/reserve")
+    @PutMapping("api/v1/devices/reserve")
     ReserveDeviceResponse reserveDevice(@RequestBody ReserveDeviceRequest request);
 }

@@ -69,6 +69,7 @@ buildNumber.properties
 
 # AnyLogic
 lib
+cache
 
 ### React ###
 # dependencies
