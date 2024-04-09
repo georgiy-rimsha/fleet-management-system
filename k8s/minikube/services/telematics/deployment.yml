@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telematics
+  labels:
+    app: telematics
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: telematics
+      labels:
+        app: telematics
+    spec:
+      containers:
+        - name: telematics
+          image: amigoscode/telematics:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: telematics

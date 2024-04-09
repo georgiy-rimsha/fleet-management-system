@@ -30,7 +30,8 @@ export default function Dashboard() {
     // averageFuelGauge: 0.03,
   });
 
-  const SOCKET_URL = "http://localhost:8082/ws-message";
+  const SOCKET_URL =
+    "https://fmvs.eu-central-1.elasticbeanstalk.com/telematics/ws-message";
   let onConnected = () => {
     console.log("Connected!!");
   };

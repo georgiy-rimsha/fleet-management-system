@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle
+  labels:
+    app: vehicle
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: vehicle
+      labels:
+        app: vehicle
+    spec:
+      containers:
+        - name: vehicle
+          image: amigoscode/vehicle:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: vehicle
