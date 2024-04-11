@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: vehicle
-          image: amigoscode/vehicle:latest
+          image: notenger/vehicle:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

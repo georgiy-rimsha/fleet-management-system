@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: telematics
-          image: amigoscode/telematics:latest
+          image: notenger/telematics:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082

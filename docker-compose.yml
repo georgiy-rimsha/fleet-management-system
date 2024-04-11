@@ -25,6 +25,26 @@ services:
 #      - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
     networks:
       - spring
+  eureka-server:
+    image: notenger/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+  apigw:
+    image: notenger/apigw:latest
+    container_name: apigw
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
   vehicle:
     image: notenger/vehicle:08.04.2024.08.22.54
     container_name: vehicle

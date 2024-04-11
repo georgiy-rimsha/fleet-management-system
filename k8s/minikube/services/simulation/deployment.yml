@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: simulation
-          image: amigoscode/simulation:latest
+          image: notenger/simulation:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081

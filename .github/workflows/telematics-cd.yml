@@ -37,7 +37,9 @@ jobs:
           echo "aws/docker-compose.yml after updating tag"
           cat ./aws/docker-compose.yml
       - name: Generate deployment package
-        run: zip -r deploy.zip aws/.
+        run: |
+          cd aws
+          zip -r deploy.zip .
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -48,7 +50,7 @@ jobs:
           version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
           version_description: ${{ github.SHA }}
           region: ${{ secrets.EB_REGION }}
-          deployment_package: deploy.zip
+          deployment_package: aws/deploy.zip
       - name: Commit and push aws/docker-compose.yml
         run: |
           git config user.name github-actions

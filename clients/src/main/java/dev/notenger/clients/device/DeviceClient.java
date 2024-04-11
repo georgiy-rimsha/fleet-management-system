@@ -1,27 +1,31 @@
 package dev.notenger.clients.device;
 
+import dev.notenger.clients.LoadBalancerConfiguration;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
-        name = "device",
-        url = "${clients.device.url}",
+        name = "simulation",
+//        url = "${clients.device.url}",
+        path = "api/v1/devices",
         configuration = CustomErrorDecoder.class
 )
+@LoadBalancerClient(name = "simulation", configuration = LoadBalancerConfiguration.class)
 public interface DeviceClient {
 
-    @GetMapping("api/v1/devices/{deviceId}")
+    @GetMapping("{deviceId}")
     DeviceDTO getDevice(@PathVariable("deviceId") Integer deviceId);
 
-    @PostMapping("api/v1/devices")
+    @PostMapping
     RegisterDeviceResponse registerDevice(@RequestBody RegisterDeviceRequest request);
 
-    @DeleteMapping("api/v1/devices/{deviceId}")
+    @DeleteMapping("{deviceId}")
     void unregisterDevice(@PathVariable("deviceId") Integer deviceId);
 
-    @PutMapping("api/v1/devices/{deviceId}")
+    @PutMapping("{deviceId}")
     void updateDevice(@PathVariable("deviceId") Integer deviceId, @RequestBody UpdateDeviceRequest request);
 
-    @PutMapping("api/v1/devices/reserve")
+    @PutMapping("reserve")
     ReserveDeviceResponse reserveDevice(@RequestBody ReserveDeviceRequest request);
 }
