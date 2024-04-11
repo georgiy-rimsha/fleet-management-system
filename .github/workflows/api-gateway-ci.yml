@@ -1,4 +1,4 @@
-name: CI - Build Api-Gateway and Eureka-Server Services
+name: CI - Build Api-Gateway Service
 
 on:
   pull_request:
@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - apigw/**
-      - eureka-server/**
 
 jobs:
   build:
@@ -20,6 +19,4 @@ jobs:
           java-version: '18'
           cache: 'maven'
       - name: Build and run Unit/Integration Tests with Maven
-        run: | 
-          mvn -ntp -B verify -pl apigw -am
-          mvn -ntp -B verify -pl eureka-server -am
+        run: mvn -ntp -B verify -pl apigw -am
