@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  application:
+    name: vehicle
+  flyway:
+    baseline-on-migrate: true
+  datasource:
+    url: jdbc:postgresql://localhost:5332/vehicle
+    username: notenger
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format-sql: true
+    show-sql: false
+  profiles:
+    active: default
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
+
+management:
+  server:
+    port: 9101
+  endpoints:
+    web:
+      exposure:
+        include: health
