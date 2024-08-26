@@ -1,4 +1,4 @@
-package dev.notenger.clients.vehicle.exception;
+package dev.notenger.clients.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

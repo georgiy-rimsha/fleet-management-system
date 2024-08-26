@@ -9,7 +9,8 @@ import org.springframework.context.annotation.PropertySources;
 @SpringBootApplication(
         exclude = {RabbitAutoConfiguration.class},
         scanBasePackages = {
-                "dev.notenger.simulation"
+                "dev.notenger.simulation",
+                "dev.notenger.amqp",
         }
 )
 @PropertySources({

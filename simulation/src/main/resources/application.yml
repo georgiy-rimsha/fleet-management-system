@@ -6,6 +6,11 @@ server:
 spring:
   application:
     name: simulation
+  rabbitmq:
+    host: localhost
+    port: 5672
+    ssl:
+      enabled: false
   profiles:
     active: default
 
@@ -16,3 +21,8 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     enabled: true
+
+logging:
+  level:
+    root: INFO
+    dev.notenger.config: INFO # DEBUG
