@@ -43,4 +43,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, prometheus
+      base-path: "/"
+      path-mapping:
+        prometheus: "metrics"
+  metrics:
+    tags:
+      application: vehicle
