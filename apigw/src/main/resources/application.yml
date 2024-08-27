@@ -19,6 +19,14 @@ spring:
           uri: lb://TELEMATICS
           predicates:
             - Path=/api/v1/telemetry/**, /ws-api/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_LAST
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
 
 logging:
   level:
