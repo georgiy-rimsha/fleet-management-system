@@ -4,8 +4,29 @@ server:
 spring:
   application:
     name: telematics
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      database: telematics
+      username: notenger
+      password: password
+  rabbitmq:
+    host: localhost
+    port: 5672
+    ssl:
+      enabled: false
   profiles:
     active: default
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    telematics: telematics.queue
+  routing-keys:
+    internal-telematics: internal.telematics.routing-key
 
 eureka:
   client:
@@ -14,3 +35,8 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     enabled: true
+
+logging:
+  level:
+    root: INFO
+    dev.notenger.telematics: INFO # DEBUG
