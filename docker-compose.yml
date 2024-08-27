@@ -14,8 +14,59 @@ services:
       - postgres
     restart: unless-stopped
 
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: notenger
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: telematics
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9093:9090"
+    networks:
+      - spring
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - spring
+    depends_on:
+      - prometheus
+
+  rabbitmq:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+      - "61613:61613"
+    networks:
+      - spring
+
 networks:
   postgres:
+    driver: bridge
+  mongo:
+    driver: bridge
+  spring:
     driver: bridge
 
 volumes:
