@@ -15,6 +15,6 @@ public class TelematicsConsumer {
     @RabbitListener(queues = "${rabbitmq.queues.telematics}")
     public void consumer(Telemetry telemetry) {
         log.debug("Consumed new message [{}]", telemetry);
-        telematicsService.save(telemetry);
+        telematicsService.saveAndPublish(telemetry);
     }
 }

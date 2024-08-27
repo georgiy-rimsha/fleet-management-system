@@ -1,6 +1,8 @@
 package dev.notenger.telematics;
 
 import dev.notenger.clients.telematics.exception.TelemetryNotFoundException;
+import dev.notenger.telematics.messaging.GeolocationDTO;
+import dev.notenger.telematics.messaging.TelemetryDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,9 +19,47 @@ import java.util.stream.Collectors;
 public class TelematicsService {
 
     private final MongoTemplate mongoTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final GeolocationDTOMapper geolocationDTOMapper;
 
-    public void save(Telemetry telemetry) {
+    public void saveAndPublish(Telemetry telemetry) {
         mongoTemplate.insert(telemetry);
+        GeolocationDTO geolocationDTO = geolocationDTOMapper.apply(telemetry);
+        messagingTemplate.convertAndSend("/telematics/geolocation", geolocationDTO);
+    }
+
+    @Scheduled(fixedRate = 1_000)
+    private void pushAggregatedData() {
+        TelemetryDTO telemetryDTO = getDeviceTelemetrySummary();
+        messagingTemplate.convertAndSend("/telematics/telemetry", telemetryDTO);
+    }
+
+    private TelemetryDTO getDeviceTelemetrySummary() {
+        List<Telemetry> telemetryList = mongoTemplate.findAll(Telemetry.class);
+        Map<Integer, Telemetry> latestTelemetryByDeviceId = telemetryList.stream()
+                .collect(
+                        Collectors.toMap(
+                                Telemetry::getDeviceId,
+                                Function.identity(),
+                                BinaryOperator.maxBy(Comparator.comparing(Telemetry::getTimestamp))));
+
+        OptionalDouble totalAverageSpeed = latestTelemetryByDeviceId.values()
+                .stream()
+                .mapToDouble(Telemetry::getSpeedometer)
+                .average();
+        OptionalDouble totalAverageOdometer = latestTelemetryByDeviceId.values()
+                .stream()
+                .mapToDouble(Telemetry::getOdometer)
+                .average();
+        OptionalDouble totalAverageFuelGauge = latestTelemetryByDeviceId.values()
+                .stream()
+                .mapToDouble(Telemetry::getFuelGauge)
+                .average();
+
+        return new TelemetryDTO(
+                totalAverageSpeed.isPresent() ? totalAverageSpeed.getAsDouble() : null,
+                totalAverageOdometer.isPresent() ? totalAverageOdometer.getAsDouble() : null,
+                totalAverageFuelGauge.isPresent() ? totalAverageFuelGauge.getAsDouble() : null);
     }
 
     public Double getLastOdometerReadingByDeviceId(Integer deviceId) {
