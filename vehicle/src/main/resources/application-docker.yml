@@ -13,7 +13,7 @@ spring:
   application:
     name: vehicle
   datasource:
-    url: jdbc:postgresql://localhost:5332/vehicle
+    url: jdbc:postgresql://postgres:5432/vehicle
     username: notenger
     password: password
   jpa:
@@ -23,14 +23,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format-sql: true
-    show-sql: false
-  profiles:
-    active: default
+    show-sql: true
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka
     fetch-registry: true
     register-with-eureka: true
     enabled: true

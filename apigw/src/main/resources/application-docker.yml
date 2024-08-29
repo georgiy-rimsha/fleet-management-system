@@ -1,0 +1,69 @@
+server:
+  port: 9090
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: vehicle
+          uri: lb://VEHICLE
+          predicates:
+            - Path=/api/v1/vehicles/**
+        - id: simulation
+          uri: lb://SIMULATION
+          predicates:
+            - Path=/api/v1/places/**, /api/v1/devices/**
+        - id: telematics
+          uri: lb://TELEMATICS
+          predicates:
+            - Path=/api/v1/telemetry/**, /ws-api/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_LAST
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak.domain}/realms/${keycloak.realm}
+
+keycloak:
+  realm: spring-boot-code
+  domain: keycloak:9081
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  gateway:
+    enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+      fetch-registry: true
+      register-with-eureka: true

@@ -24,6 +24,9 @@
         <spring.boot.maven.plugin.version>3.2.5</spring.boot.maven.plugin.version>
         <spring.boot.dependencies.version>3.2.5</spring.boot.dependencies.version>
         <spring.cloud-version>2023.0.1</spring.cloud-version>
+        <docker.image.registry />
+        <docker.image.repository />
+        <docker.image.tag />
     </properties>
 
     <dependencyManagement>
@@ -115,6 +118,40 @@
                             <include>**/*IT.java</include>
                         </includes>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>3.4.0</version>
+                    <configuration>
+                        <from>
+                            <image>eclipse-temurin:21</image>
+                            <platforms>
+                                <platform>
+                                    <architecture>amd64</architecture>
+                                    <os>windows</os>
+                                </platform>
+                                <platform>
+                                    <architecture>amd64</architecture>
+                                    <os>linux</os>
+                                </platform>
+                            </platforms>
+                        </from>
+                        <to>
+                            <image>${docker.image.registry}/${docker.image.repository}:${docker.image.tag}</image>
+                            <tags>
+                                <tag>latest</tag>
+                            </tags>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

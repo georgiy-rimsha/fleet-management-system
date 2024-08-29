@@ -77,6 +77,71 @@ services:
     networks:
       - spring
 
+  eureka-server:
+    image: notenger/eureka-server:29.08.2024.08.52.48
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+
+  apigw:
+    image: notenger/apigw:29.08.2024.12.32.32
+    container_name: apigw
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_mRlYi1e69
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+      - keycloak
+
+  vehicle:
+    image: public.ecr.aws/b2y2j9p6/vehicle:29.08.2024.18.15.27
+    container_name: vehicle
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - CLIENTS_DEVICE_URL=http://simulation:8081
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - postgres
+
+  simulation:
+    image: public.ecr.aws/b2y2j9p6/simulation:29.08.2024.17.57.32
+    container_name: simulation
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  telematics:
+    image: public.ecr.aws/b2y2j9p6/telematics:29.08.2024.19.24.50
+    container_name: telematics
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - mongo
+    depends_on:
+      - mongo
+      - rabbitmq
+
 networks:
   postgres:
     driver: bridge
