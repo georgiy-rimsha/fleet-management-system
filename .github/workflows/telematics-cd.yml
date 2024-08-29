@@ -1,0 +1,116 @@
+name: CD - Deploy Telematics Service To ECS
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - telematics/**
+
+env:
+  ECR_REPOSITORY: telematics
+  ECS_SERVICE: telematics
+  ECS_TASK_DEFINITION: aws/fms-telematics-task-definition.json
+  KUBERNETES_DEPLOYMENT: k8s/minikube/services/telematics/deployment.yml
+  CONTAINER_NAME: telematics
+  MODULE_NAME: telematics
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: notenger
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: telematics
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials for ECR
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Set build number
+        id: build-number
+        run: echo "BUILD_NUMBER=$(date '+%d.%m.%Y.%H.%M.%S')" >> $GITHUB_OUTPUT
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.0.1
+        with:
+          registry-type: public
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY_ALIAS: b2y2j9p6
+          IMAGE_TAG: ${{ steps.build-number.outputs.BUILD_NUMBER }}
+        run: |
+          ECR_REGISTRY_FULL_NAME=${ECR_REGISTRY}/${ECR_REGISTRY_ALIAS}
+          mvn -ntp -B verify -pl ${{ env.MODULE_NAME }} -am \
+            -Ddocker.image.registry=$ECR_REGISTRY_FULL_NAME \
+            -Ddocker.image.repository=$ECR_REPOSITORY \
+            -Ddocker.image.tag=$IMAGE_TAG \
+            jib:build
+          echo "image=$ECR_REGISTRY_FULL_NAME/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID and secret variables in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+          environment-variables: |
+            SPRING_RABBITMQ_PASSWORD=${{ secrets.AWS_MQ_PASSWORD }}
+
+      - name: Configure AWS credentials for ECS
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.5.0
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      - name: Fill in the new image ID in the docker-compose and k8s deployment files
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY_ALIAS: b2y2j9p6
+          IMAGE_TAG: ${{ steps.build-number.outputs.BUILD_NUMBER }}
+        run: |
+          ECR_REGISTRY_FULL_NAME=${ECR_REGISTRY}/${ECR_REGISTRY_ALIAS}
+          sed -i -E "s_(${ECR_REGISTRY_FULL_NAME}/${ECR_REPOSITORY}:)([^\"']*)_\1${IMAGE_TAG}_" docker-compose.yml ${KUBERNETES_DEPLOYMENT}
+
+      - name: Commit and push docker-compose.yml
+        env:
+          IMAGE_TAG: ${{ steps.build-number.outputs.BUILD_NUMBER }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docker-compose.yml ${KUBERNETES_DEPLOYMENT}
+          git commit -m "Update docker-compose.yml docker image with new tag $IMAGE_TAG"
+          git pull --rebase
+          git push

@@ -1,0 +1,36 @@
+name: CI - Build Vehicle Service
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - vehicle/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14.1
+        env:
+          POSTGRES_USER: notenger
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: vehicle
+        ports:
+          - 5332:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+      - name: Build and run Unit/Integration Tests with Maven
+        run: mvn -ntp -B verify -pl vehicle -am

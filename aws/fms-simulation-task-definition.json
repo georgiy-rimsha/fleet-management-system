@@ -1,0 +1,48 @@
+{
+    "family": "fms-simulation",
+    "containerDefinitions": [
+        {
+            "name": "simulation",
+            "image": "919782984342.dkr.ecr.eu-central-1.amazonaws.com/simulation:28.05.2024.17.53.34",
+            "cpu": 0,
+            "memoryReservation": 900,
+            "portMappings": [
+                {
+                    "name": "simulation-8081-tcp",
+                    "containerPort": 8081,
+                    "hostPort": 8081,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "SPRING_PROFILES_ACTIVE",
+                    "value": "aws"
+                },
+                {
+                    "name": "SPRING_RABBITMQ_PASSWORD",
+                    "value": "<>"
+                }
+            ],
+            "essential": true,
+            "mountPoints": [],
+            "volumesFrom": [],
+            "systemControls": []
+        }
+    ],
+    "volumes": [
+        {
+            "name": "logs-simulation",
+            "host": {
+                "sourcePath": "/var/log/containers/simulation"
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}
