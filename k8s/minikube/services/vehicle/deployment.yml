@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle
+  labels:
+    app: vehicle
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: vehicle
+      labels:
+        app: vehicle
+    spec:
+      hostname: vehicle
+      containers:
+        - name: vehicle
+          image: public.ecr.aws/b2y2j9p6/vehicle:29.08.2024.18.15.27
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+  selector:
+    matchLabels:
+      app: vehicle
