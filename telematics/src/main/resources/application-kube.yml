@@ -1,0 +1,46 @@
+server:
+  port: 8082
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  application:
+    name: telematics
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      authentication-database: admin
+      database: telematics
+      username: notenger
+      password: password
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    ssl:
+      enabled: false
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    telematics: telematics.queue
+  routing-keys:
+    internal-telematics: internal.telematics.routing-key
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    dev.notenger.telematics: INFO # DEBUG

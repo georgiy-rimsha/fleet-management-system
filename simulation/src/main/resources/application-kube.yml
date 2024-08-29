@@ -1,0 +1,32 @@
+server:
+  port: 8081
+  error:
+    include-message: always
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  application:
+    name: simulation
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    ssl:
+      enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    dev.notenger.simulation: INFO # DEBUG
