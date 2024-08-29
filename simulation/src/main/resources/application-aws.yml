@@ -1,0 +1,24 @@
+server:
+  port: 8081
+  error:
+    include-message: always
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  exposed-headers: "*"
+
+spring:
+  application:
+    name: simulation
+  rabbitmq:
+    username: notenger
+    host: b-06ec40b5-3776-41d0-b937-9db8ab61e3b2.mq.eu-central-1.amazonaws.com
+    port: 5671
+    ssl:
+      enabled: true
+
+eureka:
+  client:
+    enabled: false
