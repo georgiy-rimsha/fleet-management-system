@@ -9,8 +9,8 @@ This project is deployed on AWS and available for a try:
 https://main.d3u9lg0x3zo2mp.amplifyapp.com/
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/6bc83742-7d2a-4cac-aa74-96b8c509b135" width="200" />
-  <img src="https://github.com/user-attachments/assets/eedcce78-7da0-46bf-9291-47a4cb6b45d2" width="200" />
+  <img src="https://github.com/user-attachments/assets/6bc83742-7d2a-4cac-aa74-96b8c509b135" width="500" />
+  <img src="https://github.com/user-attachments/assets/eedcce78-7da0-46bf-9291-47a4cb6b45d2" width="500" />
 </p>
 
 ## Runtime Architecture
