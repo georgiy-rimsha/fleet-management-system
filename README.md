@@ -17,7 +17,11 @@ The project can be easily configured to run in various environments using Spring
 - `kube` - on Kubernetes
 - `aws` - deployed to AWS cloud with native stack
 
-For the `default` and `docker` profiles, the implementation of infrastructure services is independent of AWS as a provider:
+Architecture diagram of the AWS deployment:
+
+![architecture_diagram](https://github.com/user-attachments/assets/c46e5661-0bd2-4267-a915-3cd233dacc9b)
+
+For all profiles except `aws`, the implementation of infrastructure services is independent of AWS as a provider
 
 - OAuth2 provider: Keycloak vs. Amazon Cognito
 - API gateway: Spring Cloud API Gateway vs. Amazon API Gateway
