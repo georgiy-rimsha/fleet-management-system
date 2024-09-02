@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 
 @SpringBootApplication(
         scanBasePackages = {
-                "dev.notenger.telematics"
+                "dev.notenger.telematics",
+                "dev.notenger.amqp"
         },
         exclude = {DataSourceAutoConfiguration.class, RabbitAutoConfiguration.class}
 )
