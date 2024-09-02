@@ -27,11 +27,11 @@ spring:
             allowedOrigins: "*"
             allowedHeaders: "*"
             allowedMethods: "*"
-      security:
-        oauth2:
-          resourceserver:
-            jwt:
-              issuer-uri: https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_mRlYi1e69
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_mRlYi1e69
 #              http://${keycloak.domain}/realms/${keycloak.realm}
 
 keycloak:
