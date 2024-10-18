@@ -38,13 +38,6 @@ keycloak:
   realm: spring-boot-code
   domain: localhost:9081
 
-logging:
-  level:
-    org:
-      springframework:
-        security:
-          web: DEBUG
-
 management:
   endpoints:
     web:

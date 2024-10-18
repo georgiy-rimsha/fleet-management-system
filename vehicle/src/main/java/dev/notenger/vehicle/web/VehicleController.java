@@ -38,7 +38,7 @@ public class VehicleController {
     }
 
     @GetMapping("{vehicleId}")
-    public Vehicle getVehicle(@PathVariable Integer vehicleId) {
+    public Vehicle getVehicle(@PathVariable("vehicleId") Integer vehicleId) {
         log.info("Requested vehicle with id {}", vehicleId);
         return vehicleService.getVehicle(vehicleId);
     }

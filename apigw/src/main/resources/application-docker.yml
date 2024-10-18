@@ -1,12 +1,6 @@
 server:
   port: 9090
 
-cors:
-  allowed-origins: "*"
-  allowed-methods: "*"
-  allowed-headers: "*"
-  exposed-headers: "*"
-
 spring:
   application:
     name: api-gateway
@@ -42,13 +36,6 @@ spring:
 keycloak:
   realm: spring-boot-code
   domain: keycloak:9081
-
-logging:
-  level:
-    org:
-      springframework:
-        security:
-          web: DEBUG
 
 management:
   endpoints:

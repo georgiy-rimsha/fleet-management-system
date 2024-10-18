@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestPropertySource(properties = "eureka.client.enabled=false")
 @AutoConfigureWebTestClient
 public class VehicleIT {
 
@@ -89,6 +91,7 @@ public class VehicleIT {
                 .model(fakeModel)
                 .year(fakeYear)
                 .groupName(fakeGroupName)
+                .averageSpeed(averageSpeed)
                 .deviceId(fakeDeviceId)
                 .build();
 
@@ -158,6 +161,7 @@ public class VehicleIT {
                 .year(fakeYear)
                 .groupName(fakeGroupName)
                 .deviceId(fakeDeviceId)
+                .averageSpeed(averageSpeed)
                 .build();
 
         assertThat(allVehicles).contains(expectedVehicle);
@@ -254,6 +258,7 @@ public class VehicleIT {
                 .year(fakeYear)
                 .groupName(fakeGroupName)
                 .deviceId(fakeDeviceId)
+                .averageSpeed(averageSpeed)
                 .build();
 
         assertThat(updatedVehicle).isEqualTo(expectedVehicle);
