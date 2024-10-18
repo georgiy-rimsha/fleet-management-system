@@ -116,7 +116,7 @@ services:
       - postgres
 
   simulation:
-    image: public.ecr.aws/b2y2j9p6/simulation:29.08.2024.17.57.32
+    image: public.ecr.aws/b2y2j9p6/simulation:18.10.2024.11.53.26
     container_name: simulation
     ports:
       - "8081:8081"
