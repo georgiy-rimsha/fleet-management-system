@@ -116,7 +116,7 @@ services:
       - postgres
 
   simulation:
-    image: public.ecr.aws/b2y2j9p6/simulation:29.08.2024.17.57.32
+    image: public.ecr.aws/b2y2j9p6/simulation:18.10.2024.11.53.26
     container_name: simulation
     ports:
       - "8081:8081"
@@ -129,7 +129,7 @@ services:
       - rabbitmq
 
   telematics:
-    image: public.ecr.aws/b2y2j9p6/telematics:29.08.2024.19.24.50
+    image: public.ecr.aws/b2y2j9p6/telematics:18.10.2024.11.53.29
     container_name: telematics
     ports:
       - "8082:8082"
