@@ -15,7 +15,7 @@ spec:
       hostname: vehicle
       containers:
         - name: vehicle
-          image: public.ecr.aws/b2y2j9p6/vehicle:29.08.2024.18.15.27
+          image: public.ecr.aws/b2y2j9p6/vehicle:18.10.2024.12.51.30
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
